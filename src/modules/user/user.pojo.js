@@ -1,0 +1,3 @@
+class UserFilter {}
+
+module.exports = {};

@@ -1,0 +1,44 @@
+const { gql } = require('apollo-server-express');
+const userTypeDefs = require('../modules/user/user.schema');
+const commentTypeDefs = require('../modules/comment/comment.schema');
+const photoTypeDefs = require('../modules/photo/photo.schema');
+const replyTypeDefs = require('../modules/reply/reply.schema');
+const profileTypeDefs = require('../modules/profile/profile.schema');
+const likeTypeDefs = require('../modules/like/like.schema');
+const queryTypeDefs = require('./query');
+const mutationTypeDefs = require('./mutation');
+const subscriptionTypeDefs = require('./subscription');
+
+const generalTypeDefs = gql`
+	union Node = User | Photo | Comment | Like | Reply
+
+	type Edge {
+		cursor: String!
+		node: Node
+	}
+
+	#Custom Scalar Type
+	scalar DateTime
+
+	type PageInfo {
+		endCursor: String!
+		hasNextPage: Boolean!
+	}
+	enum SortDirection {
+		ASCENDING
+		DESCENDING
+	}
+`;
+
+module.exports = [
+	userTypeDefs,
+	commentTypeDefs,
+	photoTypeDefs,
+	replyTypeDefs,
+	likeTypeDefs,
+	profileTypeDefs,
+	queryTypeDefs,
+	mutationTypeDefs,
+	subscriptionTypeDefs,
+	generalTypeDefs,
+];
