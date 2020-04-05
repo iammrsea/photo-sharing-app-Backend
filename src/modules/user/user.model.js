@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema(
 			required: true,
 		},
 		password: String,
+		providerId: String,
+		providerToken: String,
 		profilePicture: String,
 	},
 	{ timestamps: true }

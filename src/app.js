@@ -5,33 +5,13 @@ const { ApolloServer, gql } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const { typeDefs, resolvers } = require('./graphql');
 
-//import module services
-const UserService = require('./modules/user/user.service');
+//import  services module
+const services = require('./modules/dataservices/data.service');
+
+//import loader module
+const loaders = require('./modules/dataloaders/loader.service');
 
 require('dotenv').config();
-
-// const user = gql`
-// 	type User {
-// 		id: ID!
-// 		username: String!
-// 	}
-// `;
-// const query = gql`
-// 	type Query {
-// 		user(id: ID!): User!
-// 	}
-// `;
-// const typeDefs = [user, query];
-// const users = [
-// 	{ id: 1, username: 'Jon Doe' },
-// 	{ id: 2, username: 'Jerry Grey' },
-// 	{ id: 3, username: 'Mary Doe' },
-// ];
-// const resolvers = {
-// 	Query: {
-// 		user: (_, { id }) => users.find((user) => user.id === +id),
-// 	},
-// };
 
 const app = express();
 
@@ -42,7 +22,8 @@ const server = new ApolloServer({
 	typeDefs,
 	resolvers,
 	context: () => ({
-		userService: new UserService(),
+		services,
+		loaders,
 	}),
 });
 

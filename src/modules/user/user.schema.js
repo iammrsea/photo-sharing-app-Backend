@@ -19,7 +19,7 @@ module.exports = gql`
 	}
 
 	type AuthResponse {
-		user: User!
+		userId: String!
 		token: String!
 	}
 
@@ -64,10 +64,10 @@ module.exports = gql`
 	}
 
 	extend type Mutation {
-		createUser(newUser: CreateUserData!): User!
+		formSignUp(newUser: CreateUserData): User!
 		editUser(id: ID!, useerData: EditUserData): User
 		deleteUser(id: ID!): User
-		signIn(signinData: FormSigninUserData): AuthResponse
+		formSignIn(signinData: FormSigninUserData): AuthResponse
 		providerSignIn(code: String): AuthResponse
 		createManyUsers(users: [CreateManyUsers!]!): [User]
 		deleteManyUsers: [User]

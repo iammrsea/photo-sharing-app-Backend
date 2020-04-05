@@ -37,7 +37,7 @@ class UserService {
 			};
 		} catch (e) {
 			console.log('error gettting users');
-			handleError(e);
+			return handleError(e);
 		}
 	}
 	async searchUsers({ first, after, searchText, sorting: { sortOrder, sortBy } }) {
@@ -61,7 +61,7 @@ class UserService {
 			};
 		} catch (e) {
 			console.log('error searching users', e);
-			handleError(e);
+			return handleError(e);
 		}
 	}
 
@@ -85,23 +85,23 @@ class UserService {
 	deleteManyUsers = () => {
 		return User.deleteMany();
 	};
-	async createUser(username, email, password, pubsub) {
+	async signUpUsingForm({ username, email, password }, pubsub) {
 		try {
-			const verifyEmail = await User.findOne({ email: email });
-			if (verifyEmail) {
+			const emailAlreadExists = await User.findOne({ email: email });
+			if (emailAlreadExists) {
 				return handleError('User already exists');
 			}
-			const verifyUsername = await User.findOne({ username: username });
-			if (verifyUsername) {
-				return handleError('User already exists');
-			}
+			// const verifyUsername = await User.findOne({ username: username });
+			// if (verifyUsername) {
+			// 	return handleError('User already exists');
+			// }
 			const hashedPassword = await bcryt.hash(password, 13);
 			const newUser = new User({
 				email: email,
 				username: username,
 				password: hashedPassword,
 			});
-			pubsub.publish('USER_CREATED', { userCreated: newUser });
+			// pubsub.publish('USER_CREATED', { userCreated: newUser });
 			const savedUser = await newUser.save();
 			savedUser.password = null;
 
@@ -122,28 +122,31 @@ class UserService {
 			return handleError(error);
 		}
 	}
-	async signIn(username, password) {
+	async formSignIn({ username, email, password }) {
 		try {
-			let userExists = await User.findOne({ username: username });
+			let userExists = await User.findOne({ username });
 			if (!userExists) {
-				handleError('Invalid Login credentials');
+				userExists = await User.findOne({ email });
+			}
+			if (!userExists) {
+				return handleError('Invalid Login credentials');
 			}
 			let match = await bcryt.compare(password, userExists.password);
 			if (!match) {
-				handleError('Invalid Login credentials');
+				return handleError('Invalid Login credentials');
 			}
 			const token = await jwt.sign(
 				{ userId: userExists._id, username: userExists.username },
-				process.env.SECRET,
+				process.env.JWT_SECRET,
 				{ expiresIn: '2h' }
 			);
 			return {
 				userId: userExists._id.toString(),
 				token: token,
-				tokenExpiration: 2,
+				// tokenExpiration: 2,
 			};
 		} catch (error) {
-			handleError(error);
+			return handleError(error);
 		}
 	}
 }
