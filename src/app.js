@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { ApolloServer, gql } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const { typeDefs, resolvers } = require('./graphql');
+const authorizationService = require('./modules/authorization/authorization.service');
 
 //import  services module
 const services = require('./modules/dataservices/data.service');
@@ -17,13 +18,15 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(authorizationService);
 
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: () => ({
+	context: ({ req }) => ({
 		services,
 		loaders,
+		req,
 	}),
 });
 

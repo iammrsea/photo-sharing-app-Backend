@@ -23,6 +23,15 @@ module.exports = {
 		formSignIn(_, { signinData }, { services: { userService } }) {
 			return userService.formSignIn({ ...signinData });
 		},
+		providerSignIn(_, { signinData }, { services: { userService } }) {
+			return userService.providerSignIn(signinData);
+		},
+		editUser(_, { id, editUserData }, { services: { userService }, req }) {
+			return userService.editUser(id, editUserData, req);
+		},
+		deleteUser(_, { id }, { services: { userService }, req }) {
+			return userService.deleteUser(id, req);
+		},
 	},
 	User: {},
 };

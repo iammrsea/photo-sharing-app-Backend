@@ -4,8 +4,8 @@ module.exports = gql`
 	type User {
 		id: ID!
 		providerId: ID
-		username: String!
-		email: String!
+		username: String
+		email: String
 		createdAt: String
 		# profile: Profile!
 		# sharedPhotos(first: Int, after: String, filter: PhotoFilter, sorting: SortData): PhotoConnection!
@@ -19,7 +19,7 @@ module.exports = gql`
 	}
 
 	type AuthResponse {
-		userId: String!
+		userId: ID!
 		token: String!
 	}
 
@@ -48,10 +48,21 @@ module.exports = gql`
 	input UserFilter {
 		username: String
 	}
+	input ProviderSignInData {
+		code: String!
+		providerName: ProviderName
+	}
 	enum UserSortableField {
 		username
 		createdAt
 		email
+	}
+	enum ProviderName {
+		facebook
+		github
+		twitter
+		google
+		linkedin
 	}
 	input UserSortData {
 		sortOrder: SortDirection = DESCENDING
@@ -65,10 +76,10 @@ module.exports = gql`
 
 	extend type Mutation {
 		formSignUp(newUser: CreateUserData): User!
-		editUser(id: ID!, useerData: EditUserData): User
+		editUser(id: ID!, editUserData: EditUserData): User
 		deleteUser(id: ID!): User
 		formSignIn(signinData: FormSigninUserData): AuthResponse
-		providerSignIn(code: String): AuthResponse
+		providerSignIn(signinData: ProviderSignInData): AuthResponse
 		createManyUsers(users: [CreateManyUsers!]!): [User]
 		deleteManyUsers: [User]
 	}

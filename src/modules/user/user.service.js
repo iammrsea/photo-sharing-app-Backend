@@ -1,6 +1,7 @@
 const bcryt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { handleError } = require('../../utils/helpers');
+const { githubService, facebookService, twitterService, googleService, linkedinService } = require('../oauth');
 const dataTransformer = require('../data-transformer/data-transformer.service');
 const queryBuilder = require('../query-builder/query-builder.service');
 const User = require('./user.model');
@@ -65,16 +66,15 @@ class UserService {
 		}
 	}
 
-	async editUser(user) {
+	async editUser(id, userData, req) {
+		if (!req.isUserAuth) {
+			return handleError('UnAuthorized');
+		}
 		try {
-			const update = {
-				email: user.email,
-				username: user.username,
-			};
-			const editedUser = await User.findOneAndUpdate({ _id: user.id }, update, {
+			return await User.findOneAndUpdate({ _id: id }, userData, {
 				useFindAndModify: false,
+				new: true,
 			});
-			return editedUser;
 		} catch (error) {
 			handleError(error);
 		}
@@ -110,17 +110,60 @@ class UserService {
 			return handleError(error);
 		}
 	}
-	async deleteUser(id) {
-		try {
-			const deletedUser = await User.findByIdAndDelete({ _id: id });
-			if (deleteUser) {
-				deletedUser.password = null;
-				return deletedUser;
+	async providerSignIn(signinData) {
+		const { code, providerName } = signinData;
+
+		const { user } = await this.signIn({ code, providerName });
+
+		const authUser = await User.findOneAndUpdate(
+			{ providerId: user.providerId },
+			{ ...user },
+			{
+				upsert: true,
+				new: true,
 			}
-			return deleteUser;
+		);
+		const token = await this.signToken(authUser._id, user.username);
+		return {
+			token,
+			userId: authUser._id.toString(),
+		};
+	}
+	signIn({ code, providerName }) {
+		switch (providerName) {
+			case 'github':
+				return githubService({ code });
+			case 'facebook':
+				return facebookService({ code });
+			case 'google':
+				return googleService({ code });
+			case 'twitter':
+				return twitterService({ code });
+			case 'linkedin':
+				return linkedinService({ code });
+			default:
+				return handleError('Invalide provider name supplied');
+		}
+	}
+	async deleteUser(id, req) {
+		if (!req.isUserAuth) {
+			return handleError('UnAuthorized');
+		}
+		try {
+			return await User.findByIdAndDelete({ _id: id });
 		} catch (error) {
 			return handleError(error);
 		}
+	}
+	signToken(userId, username) {
+		return jwt.sign(
+			{
+				userId,
+				username,
+			},
+			process.env.JWT_SECRET,
+			{ expiresIn: '72h' }
+		);
 	}
 	async formSignIn({ username, email, password }) {
 		try {
@@ -135,11 +178,7 @@ class UserService {
 			if (!match) {
 				return handleError('Invalid Login credentials');
 			}
-			const token = await jwt.sign(
-				{ userId: userExists._id, username: userExists.username },
-				process.env.JWT_SECRET,
-				{ expiresIn: '2h' }
-			);
+			const token = await this.signToken(userExists._id, userExists.username);
 			return {
 				userId: userExists._id.toString(),
 				token: token,
