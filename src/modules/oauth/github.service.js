@@ -4,11 +4,11 @@ const { requestForToken, requestForUserAccount } = require('./ouath.service');
 const token_url = 'https://github.com/login/oauth/access_token';
 const account_url = `https://api.github.com/user`;
 
-const authorizeWithGithub = async ({ code }) => {
+const authorizeWithGithub = async ({ codeToken }) => {
 	const credentials = {
 		client_id: process.env.GITHUB_CLIENT_ID,
 		client_secret: process.env.GITHUB_CLIENT_SECRET,
-		code,
+		code: codeToken,
 	};
 	try {
 		const { access_token } = await requestForToken({ credentials, token_url });

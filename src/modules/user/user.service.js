@@ -71,12 +71,16 @@ class UserService {
 			return handleError('UnAuthorized');
 		}
 		try {
+			const user = await User.findById(id);
+			if (user._id.toString() !== req.userId) {
+				return handleError('UnAuthorized');
+			}
 			return await User.findOneAndUpdate({ _id: id }, userData, {
 				useFindAndModify: false,
 				new: true,
 			});
 		} catch (error) {
-			handleError(error);
+			return handleError(error);
 		}
 	}
 	createManyUsers = (users) => {
@@ -91,10 +95,6 @@ class UserService {
 			if (emailAlreadExists) {
 				return handleError('User already exists');
 			}
-			// const verifyUsername = await User.findOne({ username: username });
-			// if (verifyUsername) {
-			// 	return handleError('User already exists');
-			// }
 			const hashedPassword = await bcryt.hash(password, 13);
 			const newUser = new User({
 				email: email,
@@ -111,9 +111,9 @@ class UserService {
 		}
 	}
 	async providerSignIn(signinData) {
-		const { code, providerName } = signinData;
+		const { codeToken, providerName } = signinData;
 
-		const { user } = await this.signIn({ code, providerName });
+		const { user } = await this.signIn({ codeToken, providerName });
 
 		const authUser = await User.findOneAndUpdate(
 			{ providerId: user.providerId },
@@ -121,6 +121,7 @@ class UserService {
 			{
 				upsert: true,
 				new: true,
+				useFindAndModify: false,
 			}
 		);
 		const token = await this.signToken(authUser._id, user.username);
@@ -129,18 +130,18 @@ class UserService {
 			userId: authUser._id.toString(),
 		};
 	}
-	signIn({ code, providerName }) {
+	signIn({ codeToken, providerName }) {
 		switch (providerName) {
 			case 'github':
-				return githubService({ code });
+				return githubService({ codeToken });
 			case 'facebook':
-				return facebookService({ code });
+				return facebookService({ codeToken });
 			case 'google':
-				return googleService({ code });
+				return googleService({ codeToken });
 			case 'twitter':
-				return twitterService({ code });
+				return twitterService({ codeToken });
 			case 'linkedin':
-				return linkedinService({ code });
+				return linkedinService({ codeToken });
 			default:
 				return handleError('Invalide provider name supplied');
 		}
@@ -150,6 +151,10 @@ class UserService {
 			return handleError('UnAuthorized');
 		}
 		try {
+			const user = await User.findById(id);
+			if (user._id.toString() !== req.userId) {
+				return handleError('UnAuthorized');
+			}
 			return await User.findByIdAndDelete({ _id: id });
 		} catch (error) {
 			return handleError(error);

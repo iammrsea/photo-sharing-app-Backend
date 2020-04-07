@@ -1,25 +1,30 @@
+const { OAuth2Client } = require('google-auth-library');
 const { handleError } = require('../../utils/helpers');
-const { requestForToken, requestForUserAccount } = require('./ouath.service');
 
-const token_url = 'https://github.com/login/oauth/access_token';
-const account_url = `https://api.github.com/user`;
+const verifyToken = (token) => {
+	const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const authorizeWithGithub = async ({ code }) => {
-	const credentials = {
-		client_id: process.env.GITHUB_CLIENT_ID,
-		client_secret: process.env.GITHUB_CLIENT_SECRET,
-		code,
-	};
+	return client.verifyIdToken({
+		idToken: token,
+		audience: process.env.GOOGLE_CLIENT_ID,
+	});
+};
+const authorizeWithGoogle = async ({ codeToken }) => {
+	// console.log('code token', codeToken);
 	try {
-		const { access_token } = await requestForToken({ credentials, token_url });
-		console.log('access_token from github', access_token);
-		const user = await requestForUserAccount({ access_token, account_url });
-		console.log('github user', user);
-		return { user, access_token };
+		const ticket = await verifyToken(codeToken);
+		const payload = ticket.getPayload();
+
+		return {
+			user: {
+				providerId: payload['sub'],
+				email: payload['email'],
+				username: payload['name'],
+			},
+		};
 	} catch (e) {
-		console.log('error authorizing with github', e);
+		console.log('error occurred while authorizing with google', e.message);
 		return handleError(e);
 	}
 };
-
-module.exports = authorizeWithGithub;
+module.exports = authorizeWithGoogle;

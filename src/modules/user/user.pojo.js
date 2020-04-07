@@ -1,3 +1,0 @@
-class UserFilter {}
-
-module.exports = {};

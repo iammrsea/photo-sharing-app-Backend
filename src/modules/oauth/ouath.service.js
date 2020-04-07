@@ -1,6 +1,5 @@
 const axios = require('axios').default;
 const { handleError } = require('../../utils/helpers');
-const fs = require('fs');
 
 const requestForToken = ({ credentials, token_url }) => {
 	return axios({

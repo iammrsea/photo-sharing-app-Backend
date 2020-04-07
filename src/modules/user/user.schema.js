@@ -49,7 +49,7 @@ module.exports = gql`
 		username: String
 	}
 	input ProviderSignInData {
-		code: String!
+		codeToken: String!
 		providerName: ProviderName
 	}
 	enum UserSortableField {
