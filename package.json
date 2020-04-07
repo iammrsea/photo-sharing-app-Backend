@@ -21,6 +21,7 @@
     "google-auth-library": "^6.0.0",
     "graphql": "^15.0.0",
     "graphql-tools": "^4.0.7",
+    "imagekit": "^3.0.4",
     "js-base64": "^2.5.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",

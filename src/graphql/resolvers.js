@@ -1,6 +1,11 @@
 const { merge } = require('lodash');
 const { GraphQLScalarType } = require('graphql');
 const userResolvers = require('../modules/user/user.resolver');
+const commentResovlers = require('../modules/comment/comment.resolver');
+const photoResolvers = require('../modules/photo/photo.resolver');
+const replyResolvers = require('../modules/reply/reply.resolver');
+const profileResolvers = require('../modules/profile/profile.resolver');
+const likeResolvers = require('../modules/like/like.resolver');
 
 const resolvers = {
 	Node: {
@@ -14,12 +19,13 @@ const resolvers = {
 			return null;
 		},
 	},
-	DateTime: new GraphQLScalarType({
-		name: 'DateTime',
-		description: 'A valid date time value.',
-		parseValue: (value) => new Date(value),
-		serialize: (value) => new Date(value).toISOString(),
-		parseLiteral: (ast) => ast.value,
-	}),
 };
-module.exports = merge(userResolvers, resolvers);
+module.exports = merge(
+	userResolvers,
+	resolvers,
+	commentResovlers,
+	profileResolvers,
+	replyResolvers,
+	likeResolvers,
+	photoResolvers
+);

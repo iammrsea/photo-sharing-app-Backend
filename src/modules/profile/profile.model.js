@@ -9,6 +9,7 @@ const profileSchema = new mongoose.Schema(
 		},
 		description: String,
 		picture: String,
+		pictureId: String,
 	},
 	{ timestamps: true }
 );

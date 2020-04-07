@@ -6,13 +6,13 @@ const mongoose = require('mongoose');
 const { typeDefs, resolvers } = require('./graphql');
 const authorizationService = require('./modules/authorization/authorization.service');
 
+require('dotenv').config();
+
 //import  services module
 const services = require('./modules/dataservices/data.service');
 
 //import loader module
 const loaders = require('./modules/dataloaders/loader.service');
-
-require('dotenv').config();
 
 const app = express();
 

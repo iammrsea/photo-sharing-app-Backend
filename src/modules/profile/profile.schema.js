@@ -6,15 +6,19 @@ module.exports = gql`
 		owner: User!
 		description: String!
 		picture: String
+		profileId: String
 	}
 	input CreateProfileData {
 		owner: ID!
 		description: String!
-		picture: String!
+		picture: Upload!
 	}
 	input EditProfileData {
-		description: String
-		picture: String
+		description: String!
+	}
+	input ChangeProfilePicture {
+		pictureId: String!
+		picture: Upload!
 	}
 
 	extend type Query {
@@ -22,6 +26,7 @@ module.exports = gql`
 	}
 	extend type Mutation {
 		createProfile(profileData: CreateProfileData): Profile!
-		editProfile(editData: EditProfileData): Profile
+		editProfile(id: ID!, editData: EditProfileData): Profile
+		editProfilePicture(id: ID!, editData: ChangeProfilePicture): Profile
 	}
 `;
