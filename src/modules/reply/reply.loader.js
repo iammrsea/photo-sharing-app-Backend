@@ -5,7 +5,9 @@ module.exports = {
 	replyById: new DataLoader(
 		(keys) => {
 			console.log('keys', keys);
-			return Reply.find({ _id: { $in: keys } });
+			return Reply.find({ _id: { $in: keys } })
+				.populate('replier')
+				.exec();
 		},
 		{
 			cacheKeyFn: (key) => key.toString(),

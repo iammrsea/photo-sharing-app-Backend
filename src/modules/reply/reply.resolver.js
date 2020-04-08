@@ -13,11 +13,11 @@ module.exports = {
 		},
 	},
 	Reply: {
-		comment(root, _, { loaders: { commentLoaders } }) {
-			return commentLoaders.load(root.commentId);
-		},
-		replier(root, _, { loaders: { userLoaders } }) {
-			return userLoaders.load(root.replierId);
-		},
+		// comment(root, _, { loaders: { commentLoaders } }) {
+		// 	return commentLoaders.load(root.commentId);
+		// },
+		// replier(root, _, { loaders: { userLoaders } }) {
+		// 	return userLoaders.load(root.replierId);
+		// },
 	},
 };

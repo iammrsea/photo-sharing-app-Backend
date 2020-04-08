@@ -1,9 +1,9 @@
-const UserService = require('../user/user.service');
 const PhotoService = require('../photo/photo.service');
 const CommentService = require('../comment/comment.service');
 const ProfileService = require('../profile/profile.service');
 const LikeService = require('../like/like.service');
 const ReplyService = require('../reply/reply.service');
+const UserService = require('../user/user.service');
 
 module.exports = {
 	userService: new UserService(),

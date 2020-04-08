@@ -41,8 +41,8 @@ module.exports = {
 			return photoService.photosUserIsTagged({ userId: root._id, first, after, filter, sorting });
 		},
 
-		profile(root, _, { services: { profileService } }) {
-			return profileService.getUserProfile(root._id);
-		},
+		// profile(root, _, { services: { profileService } }) {
+		// 	return profileService.getUserProfile(root._id);
+		// },
 	},
 };

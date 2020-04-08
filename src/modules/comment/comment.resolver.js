@@ -13,14 +13,14 @@ module.exports = {
 		},
 	},
 	Comment: {
-		commentor(root, _, { loaders: { userLoaders } }) {
-			return userLoaders.load(root.commentorId);
-		},
+		// commentor(root, _, { loaders: { userLoaders } }) {
+		// 	return userLoaders.load(root.commentorId);
+		// },
 		totalReply(root, _, { services: { replyService } }) {
 			return replyService.totalReply(root.commentorId);
 		},
-		replies(root, _, { loaders: { replyLoaders } }) {
-			return replyLoaders.repliesByCommentId.load(root._id);
-		},
+		// replies(root, _, { loaders: { replyLoaders } }) {
+		// 	return replyLoaders.repliesByCommentId.load(root._id);
+		// },
 	},
 };

@@ -5,6 +5,7 @@ module.exports = gql`
 		id: ID!
 		photo: Photo
 		liker: User!
+		createdAt: String!
 	}
 
 	input CreateLikeData {

@@ -5,15 +5,26 @@ const Types = mongoose.Schema.Types;
 
 const likeSchema = new Schema(
 	{
-		likerId: {
+		liker: {
 			type: Types.ObjectId,
+			ref: 'User',
 		},
 		photoId: {
 			type: Types.ObjectId,
 		},
-		content: String,
 	},
 	{ timestamps: true }
 );
 
-module.exports = mongoose.model('like', likeSchema);
+likeSchema.post('save', updatePhoto);
+async function updatePhoto(doc) {
+	const Photo = mongoose.model('Photo');
+	await Photo.updateOne({ _id: doc.photoId }, { $push: { likes: doc._id } });
+}
+likeSchema.post('remove', removeLikeFromPhoto);
+async function removeLikeFromPhoto(doc) {
+	const Photo = mongoose.model('Photo');
+	await Photo.updateOne({ _id: doc.photoId }, { $pull: { likes: { $eq: doc._id } } });
+}
+
+module.exports = mongoose.model('Like', likeSchema);

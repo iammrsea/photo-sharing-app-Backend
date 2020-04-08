@@ -5,14 +5,13 @@ module.exports = gql`
 		id: ID!
 		commentor: User!
 		content: String!
-		createdAt: String
-		photo: Photo
+		createdAt: String!
 		replies: [Reply!]!
 		totalLike: Int
 		totalReply: Int
 	}
 	input CreateCommentData {
-		commentorId: String!
+		commentor: String!
 		photoId: String!
 		content: String!
 	}

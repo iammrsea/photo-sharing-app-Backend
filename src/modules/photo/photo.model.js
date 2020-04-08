@@ -11,8 +11,9 @@ const photoSchema = new Schema(
 		story: {
 			type: Types.String,
 		},
-		ownerId: {
+		owner: {
 			type: Types.ObjectId,
+			ref: 'User',
 			required: true,
 		},
 		photoUrl: {
@@ -29,8 +30,27 @@ const photoSchema = new Schema(
 				ref: 'User',
 			},
 		],
+		likes: [
+			{
+				type: Types.ObjectId,
+				ref: 'Like',
+			},
+		],
+		comments: [
+			{
+				type: Types.ObjectId,
+				ref: 'Comment',
+			},
+		],
 	},
+
 	{ timestamps: true }
 );
-
-module.exports = mongoose.model('photo', photoSchema);
+photoSchema.post('remove', removeLinkedDocs);
+async function removeLinkedDocs(doc) {
+	const Like = mongoose.model('Like');
+	const Comment = mongoose.model('Comment');
+	await Like.remove({ _id: { $in: doc.likes } });
+	await Comment.remove({ _id: { $in: doc.comments } });
+}
+module.exports = mongoose.model('Photo', photoSchema);

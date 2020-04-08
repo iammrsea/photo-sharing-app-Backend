@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
 	{
 		username: {
 			type: String,
@@ -13,11 +14,22 @@ const userSchema = new mongoose.Schema(
 		},
 		password: String,
 		providerId: String,
+		profile: {
+			type: Schema.Types.ObjectId,
+			ref: 'Profile',
+		},
 	},
 	{ timestamps: true }
 );
 
-const User = mongoose.model('user', userSchema);
+userSchema.post('remove', removeProfile);
+
+async function removeProfile(doc) {
+	const Profile = mongoose.model('Profile');
+	await Profile.remove({ ownerId: doc._id });
+}
+
+const User = mongoose.model('User', userSchema);
 User.createIndexes({ username: 'text' });
 
 module.exports = User;

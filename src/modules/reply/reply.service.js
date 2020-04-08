@@ -6,6 +6,7 @@ class ReplyService {
 	createReply(reply) {
 		const newReply = new Reply({
 			...reply,
+			replier: reply.replierId,
 		});
 		return newReply.save();
 	}

@@ -5,8 +5,9 @@ const Types = mongoose.Schema.Types;
 
 const replySchema = new Schema(
 	{
-		replierId: {
+		replier: {
 			type: Types.ObjectId,
+			ref: 'User',
 		},
 		commentId: {
 			type: Types.ObjectId,
@@ -15,5 +16,15 @@ const replySchema = new Schema(
 	},
 	{ timestamps: true }
 );
+replySchema.post('save', updateComment);
+async function updateComment(doc) {
+	const Comment = mongoose.model('Comment');
+	await Comment.updateOne({ _id: doc.commentId }, { $push: { replies: doc._id } });
+}
 
-module.exports = mongoose.model('reply', replySchema);
+replySchema.post('remove', removeReplyFromComment);
+async function removeReplyFromComment(doc) {
+	const Comment = mongoose.model('Comment');
+	await Comment.updateOne({ _id: doc.commentId }, { $pull: { replies: { $eq: doc._id } } });
+}
+module.exports = mongoose.model('Reply', replySchema);
