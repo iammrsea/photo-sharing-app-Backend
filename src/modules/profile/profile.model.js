@@ -3,7 +3,7 @@ const Types = mongoose.Schema.Types;
 
 const profileSchema = new mongoose.Schema(
 	{
-		owner: {
+		ownerId: {
 			type: Types.ObjectId,
 			required: true,
 		},

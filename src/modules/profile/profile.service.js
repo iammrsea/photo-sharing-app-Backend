@@ -34,6 +34,9 @@ class ProfileService {
 			return handleError(e);
 		}
 	}
+	getUserProfile(ownerId) {
+		return Profile.find({ ownerId });
+	}
 	async editProfilePicture(id, picture) {}
 }
 

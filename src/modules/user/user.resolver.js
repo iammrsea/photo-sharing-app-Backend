@@ -33,5 +33,16 @@ module.exports = {
 			return userService.deleteUser(id, req);
 		},
 	},
-	User: {},
+	User: {
+		sharedPhotos(root, { first, after, filter = {}, sorting = {} }, { services: { photoService } }) {
+			return photoService.sharedPhotosByUser({ ownerId: root._id, first, after, filter, sorting });
+		},
+		photosTagged(root, { first, after, filter = {}, sorting = {} }, { services: { photoService } }) {
+			return photoService.photosUserIsTagged({ userId: root._id, first, after, filter, sorting });
+		},
+
+		profile(root, _, { services: { profileService } }) {
+			return profileService.getUserProfile(root._id);
+		},
+	},
 };

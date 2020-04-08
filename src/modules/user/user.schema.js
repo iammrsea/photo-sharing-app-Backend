@@ -7,9 +7,9 @@ module.exports = gql`
 		username: String
 		email: String
 		createdAt: String
-		# profile: Profile!
-		# sharedPhotos(first: Int, after: String, filter: PhotoFilter, sorting: SortData): PhotoConnection!
-		# photosTagged(first: Int, after: String, filter: PhotoFilter, sorting: SortData): PhotoConnection!
+		profile: Profile
+		sharedPhotos(first: Int, after: String, filter: PhotoFilter, sorting: PhotoSortData): PhotoConnection
+		photosTagged(first: Int, after: String, filter: PhotoFilter, sorting: PhotoSortData): PhotoConnection
 	}
 
 	type UserConnection {
