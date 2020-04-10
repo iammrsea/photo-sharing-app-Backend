@@ -4,7 +4,7 @@ const Reply = require('./reply.model');
 module.exports = {
 	replyById: new DataLoader(
 		(keys) => {
-			console.log('keys', keys);
+			// console.log('keys', keys);
 			return Reply.find({ _id: { $in: keys } })
 				.populate('replier')
 				.exec();
@@ -15,7 +15,7 @@ module.exports = {
 	),
 	repliesByCommentId: new DataLoader(
 		(keys) => {
-			console.log('commentIds', keys);
+			// console.log('commentIds', keys);
 
 			return repliesBatchFn(keys);
 		},

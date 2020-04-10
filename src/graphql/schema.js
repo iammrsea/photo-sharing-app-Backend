@@ -10,7 +10,7 @@ const mutationTypeDefs = require('./mutation');
 const subscriptionTypeDefs = require('./subscription');
 
 const generalTypeDefs = gql`
-	union Node = User | Photo | Comment | Like | Reply
+	union Node = User | Photo
 
 	type Edge {
 		cursor: String!

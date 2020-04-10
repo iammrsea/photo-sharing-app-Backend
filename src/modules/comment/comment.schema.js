@@ -18,10 +18,14 @@ module.exports = gql`
 
 	extend type Query {
 		comment(id: ID!): Comment!
+		comments: [Comment!]!
+		commentsByPhotoId(photoId: ID!): [Comment!]!
 	}
 	extend type Mutation {
 		createComment(comment: CreateCommentData!): Comment!
 		editComment(id: ID!, content: String!): Comment
 		deleteComment(id: ID!): Comment
+		createManyComments(comments: [CreateCommentData]): [Comment]
+		deleteManyComments: [Comment]
 	}
 `;

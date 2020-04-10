@@ -21,7 +21,11 @@ class PhotoService {
 			}
 			const build = queryBuilder(query, { first, after, sortBy, sortOrder });
 			query = build.query;
-
+			query
+				.populate('owner')
+				.populate({ path: 'comments', populate: { path: 'commentor' } })
+				.populate('likes')
+				.populate('taggedUsers');
 			const data = await query.exec();
 			const totalCount = await Photo.estimatedDocumentCount();
 			return {
@@ -48,6 +52,21 @@ class PhotoService {
 	editPhotoMeta(id, photoMeta) {}
 	changePhoto(id, photo) {}
 	deletePhoto(id) {}
+
+	createManyPhotos = (photos) => {
+		return Photo.insertMany(photos);
+	};
+	deleteManyPhotos = () => {
+		return Photo.deleteMany();
+	};
+	async editPhotoComment(id, comments) {
+		const photo = await Photo.findById(id);
+		comments.forEach((id) => photo.comments.push(id));
+		return Photo.findByIdAndUpdate({ _id: id }, photo, {
+			upsert: true,
+			new: true,
+		});
+	}
 }
 
 module.exports = PhotoService;

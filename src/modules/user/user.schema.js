@@ -70,6 +70,7 @@ module.exports = gql`
 	}
 	extend type Query {
 		user(id: ID!): User!
+		me: User!
 		users(first: Int, after: String, sorting: UserSortData, filter: UserFilter): UserConnection
 		searchUsers(first: Int, after: String, sorting: UserSortData, searchText: String): UserConnection
 	}

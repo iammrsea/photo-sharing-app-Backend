@@ -3,14 +3,15 @@ const { gql } = require('apollo-server-express');
 module.exports = gql`
 	type Like {
 		id: ID!
-		photo: Photo
+		photoId: ID!
+		likerId: ID!
 		liker: User!
 		createdAt: String!
 	}
 
 	input CreateLikeData {
 		photoId: String!
-		likerId: String
+		liker: String!
 	}
 	extend type Query {
 		like(id: ID!): Like!

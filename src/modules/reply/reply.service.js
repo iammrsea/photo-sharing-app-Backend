@@ -1,7 +1,7 @@
 const Reply = require('./reply.model');
 class ReplyService {
 	totalReply(commnetId) {
-		return Reply.estimatedDocumentCount({ commnetId });
+		return Reply.countDocuments({ commnetId });
 	}
 	createReply(reply) {
 		const newReply = new Reply({

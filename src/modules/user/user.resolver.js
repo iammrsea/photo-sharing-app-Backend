@@ -9,14 +9,18 @@ module.exports = {
 		user(_, { id }, { loaders: { userLoaders } }) {
 			return userLoaders.load(id);
 		},
+		me(_, __, { loaders: { userLoaders }, req }) {
+			return userLoaders.load(req.userId);
+		},
 	},
+
 	Mutation: {
-		// createManyUsers(_, { users }, { services: { userService } }) {
-		// 	return userService.createManyUsers(users);
-		// },
-		// deleteManyUsers(_, __, { userService }) {
-		// 	return userService.deleteManyUsers();
-		// },
+		createManyUsers(_, { users }, { services: { userService } }) {
+			return userService.createManyUsers(users);
+		},
+		deleteManyUsers(_, __, { services: { userService } }) {
+			return userService.deleteManyUsers();
+		},
 		formSignUp(_, { newUser }, { services: { userService }, pubnub }) {
 			return userService.signUpUsingForm({ ...newUser }, pubnub);
 		},

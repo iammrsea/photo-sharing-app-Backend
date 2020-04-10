@@ -6,7 +6,7 @@ const photoSchema = new Schema(
 	{
 		fileId: {
 			type: Types.String,
-			required: true,
+			required: false,
 		},
 		story: {
 			type: Types.String,

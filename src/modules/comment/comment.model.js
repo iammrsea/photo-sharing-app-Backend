@@ -24,6 +24,7 @@ const commentSchema = new Schema(
 );
 commentSchema.post('save', updatePhoto);
 async function updatePhoto(doc) {
+	// console.log('middleware ', doc);
 	const Photo = mongoose.model('Photo');
 	await Photo.updateOne({ _id: doc.photoId }, { $push: { comments: doc._id } });
 }

@@ -56,10 +56,16 @@ module.exports = gql`
 		GRAPHIC
 		OTHER
 	}
-
+	input FakePhoto {
+		owner: String!
+		photoUrl: String!
+		story: String
+		taggedUsers: [String!]!
+		category: PhotoCategory!
+	}
 	extend type Query {
 		photo(id: ID!): Photo!
-		photos(first: Int, after: Int, sorting: PhotoSortData, filter: PhotoFilter): PhotoConnection
+		photos(first: Int, after: String, sorting: PhotoSortData, filter: PhotoFilter): PhotoConnection
 	}
 
 	extend type Mutation {
@@ -67,5 +73,8 @@ module.exports = gql`
 		editPhotoMeta(id: ID!, photoMeta: EditPhotoData!): Photo
 		changePhoto(id: ID!, photo: Upload!): Photo
 		deletePhoto(id: ID!): Photo
+		createManyPhotos(photos: [FakePhoto!]!): [Photo]
+		deleteManyPhotos: [Photo]
+		editPhotoComment(id: ID!, comments: [String!]!): Photo
 	}
 `;

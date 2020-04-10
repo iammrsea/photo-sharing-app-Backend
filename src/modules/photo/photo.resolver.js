@@ -12,6 +12,15 @@ module.exports = {
 		deletePhoto(_, { id }, { services: { photoService } }) {
 			return photoService.deletePhoto(id);
 		},
+		createManyPhotos(_, { photos }, { services: { photoService } }) {
+			return photoService.createManyPhotos(photos);
+		},
+		deleteManyPhotos(_, __, { services: { photoService } }) {
+			return photoService.deleteManyPhotos();
+		},
+		editPhotoComment(_, { id, comments }, { services: { photoService } }) {
+			return photoService.editPhotoComment(id, comments);
+		},
 	},
 	Query: {
 		photo(_, { id }, { loaders: { photoLoaders } }) {
@@ -19,6 +28,14 @@ module.exports = {
 		},
 		photos(_, { first, after, filter = {}, sorting = {} }, { services: { photoService } }) {
 			return photoService.getPhotos({ first, after, filter, sorting });
+		},
+	},
+	Photo: {
+		totalComment(root, __, { services: { commentService } }) {
+			return commentService.totalCommentByPhotoId(root._id);
+		},
+		totalLike(root, __, { services: { likeService } }) {
+			return likeService.totalLikeByPhotoId(root._id);
 		},
 	},
 };
