@@ -1,7 +1,7 @@
 const { decode } = require('../cursor/cursor.service');
 
 module.exports = (query, { first, after, sortBy, sortOrder }) => {
-	const limit = first > 20 || !first ? 20 : first;
+	const limit = first > 20 || !first ? 10 : first;
 	const sort = sortOrder === 'ASCENDING' ? 'asc' : 'desc';
 	const sortingBy = sortBy || 'createdAt';
 

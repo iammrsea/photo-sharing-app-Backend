@@ -7,12 +7,18 @@ const replySchema = new Schema(
 	{
 		replier: {
 			type: Types.ObjectId,
+			required: true,
 			ref: 'User',
 		},
 		commentId: {
 			type: Types.ObjectId,
+			required: true,
+			ref: 'Comment',
 		},
-		content: String,
+		content: {
+			type: String,
+			required: true,
+		},
 	},
 	{ timestamps: true }
 );
@@ -25,6 +31,6 @@ async function updateComment(doc) {
 replySchema.post('remove', removeReplyFromComment);
 async function removeReplyFromComment(doc) {
 	const Comment = mongoose.model('Comment');
-	await Comment.updateOne({ _id: doc.commentId }, { $pull: { replies: { $eq: doc._id } } });
+	await Comment.updateOne({ _id: doc.commentId }, { $pull: { replies: doc._id } });
 }
 module.exports = mongoose.model('Reply', replySchema);

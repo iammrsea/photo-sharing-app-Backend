@@ -28,4 +28,8 @@ module.exports = gql`
 		createManyComments(comments: [CreateCommentData]): [Comment]
 		deleteManyComments: [Comment]
 	}
+
+	extend type Subscription {
+		commentAdded(photoId: ID!): Comment!
+	}
 `;

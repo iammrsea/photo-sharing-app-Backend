@@ -4,6 +4,7 @@ const ProfileService = require('../profile/profile.service');
 const LikeService = require('../like/like.service');
 const ReplyService = require('../reply/reply.service');
 const UserService = require('../user/user.service');
+const imageService = require('../photo-uploader/uploader.service');
 
 module.exports = {
 	userService: new UserService(),
@@ -12,4 +13,5 @@ module.exports = {
 	profileService: new ProfileService(),
 	likeService: new LikeService(),
 	replyService: new ReplyService(),
+	imageService,
 };

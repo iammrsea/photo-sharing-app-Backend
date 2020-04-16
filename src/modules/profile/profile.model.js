@@ -3,17 +3,29 @@ const Types = mongoose.Schema.Types;
 
 const profileSchema = new mongoose.Schema(
 	{
-		ownerId: {
+		owner: {
 			type: Types.ObjectId,
+			ref: 'User',
 			required: true,
 		},
-		description: String,
-		picture: String,
+		about: {
+			type: String,
+			required: true,
+		},
+		picture: {
+			type: String,
+			required: true,
+		},
 		pictureId: String,
 	},
 	{ timestamps: true }
 );
 
-const Profile = mongoose.model('Profile', profileSchema);
+profileSchema.post('save', updateUser);
+async function updateUser(doc) {
+	const User = mongoose.model('User');
+	await User.updateOne({ _id: doc.owner }, { profile: doc._id });
+	// await User.findOneAndUpdate({ _id: doc.owner }, { profile: doc._id }, { upsert: true });
+}
 
-module.exports = Profile;
+module.exports = mongoose.model('Profile', profileSchema);

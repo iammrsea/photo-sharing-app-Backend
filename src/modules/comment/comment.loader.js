@@ -1,7 +1,7 @@
 const DataLoader = require('dataloader');
 const Comment = require('./comment.model');
 
-module.exports = {
+module.exports = () => ({
 	commentById: new DataLoader(
 		(keys) =>
 			Comment.find({ _id: { $in: keys } })
@@ -22,4 +22,4 @@ module.exports = {
 			cacheKeyFn: (key) => key.toString(),
 		}
 	),
-};
+});

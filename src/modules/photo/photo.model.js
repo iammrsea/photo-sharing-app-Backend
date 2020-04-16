@@ -4,12 +4,9 @@ const Types = mongoose.Schema.Types;
 
 const photoSchema = new Schema(
 	{
-		fileId: {
+		description: {
 			type: Types.String,
-			required: false,
-		},
-		story: {
-			type: Types.String,
+			required: true,
 		},
 		owner: {
 			type: Types.ObjectId,
@@ -33,7 +30,6 @@ const photoSchema = new Schema(
 		likes: [
 			{
 				type: Types.ObjectId,
-				ref: 'Like',
 			},
 		],
 		comments: [
@@ -48,9 +44,7 @@ const photoSchema = new Schema(
 );
 photoSchema.post('remove', removeLinkedDocs);
 async function removeLinkedDocs(doc) {
-	const Like = mongoose.model('Like');
 	const Comment = mongoose.model('Comment');
-	await Like.remove({ _id: { $in: doc.likes } });
 	await Comment.remove({ _id: { $in: doc.comments } });
 }
 module.exports = mongoose.model('Photo', photoSchema);

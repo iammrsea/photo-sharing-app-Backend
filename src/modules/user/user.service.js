@@ -14,6 +14,9 @@ class UserService {
 		return User.find({ _id: { $in: ids } });
 	}
 
+	userById(id) {
+		return User.findById(id).populate('profile').exec();
+	}
 	//Basic CRUD operations
 	async getUsers({ first, after, filter: { username }, sorting: { sortOrder, sortBy } }) {
 		try {
@@ -25,7 +28,7 @@ class UserService {
 			const build = queryBuilder(query, { first, after, sortBy, sortOrder });
 			query = build.query;
 
-			const data = await query.exec();
+			const data = await query.populate('profile').exec();
 			const totalCount = await User.estimatedDocumentCount();
 			return {
 				...dataTransformer({
@@ -83,12 +86,12 @@ class UserService {
 			return handleError(error);
 		}
 	}
-	createManyUsers = (users) => {
-		return User.insertMany(users);
-	};
-	deleteManyUsers = () => {
-		return User.deleteMany();
-	};
+	async createManyUsers(users) {
+		return await User.insertMany(users);
+	}
+	async deleteManyUsers() {
+		return await User.deleteMany();
+	}
 	async signUpUsingForm({ username, email, password }, pubsub) {
 		try {
 			const emailAlreadExists = await User.findOne({ email: email });

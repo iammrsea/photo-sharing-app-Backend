@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer, PubSub } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const { typeDefs, resolvers } = require('./graphql');
 const authorizationService = require('./modules/authorization/authorization.service');
@@ -16,6 +16,8 @@ const loaders = require('./modules/dataloaders/loader.service');
 
 const app = express();
 
+const pubsub = new PubSub();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(authorizationService);
@@ -27,6 +29,7 @@ const server = new ApolloServer({
 		services,
 		loaders,
 		req,
+		pubsub,
 	}),
 });
 

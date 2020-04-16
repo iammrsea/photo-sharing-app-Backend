@@ -17,14 +17,13 @@ class PhotoService {
 				// query = User.find({ $text: { $search: searchText } });
 			}
 			if (ownerId) {
-				query.where({ ownerId });
+				query.where({ owner: ownerId });
 			}
 			const build = queryBuilder(query, { first, after, sortBy, sortOrder });
 			query = build.query;
 			query
 				.populate('owner')
 				.populate({ path: 'comments', populate: { path: 'commentor' } })
-				.populate('likes')
 				.populate('taggedUsers');
 			const data = await query.exec();
 			const totalCount = await Photo.estimatedDocumentCount();
@@ -48,17 +47,59 @@ class PhotoService {
 	async photosUserIsTagged({ userId, first, after, filter, sorting }) {
 		return this.getPhotos({ userId, first, after, filter, sorting });
 	}
-	createPhoto(id, photoData) {}
+	async likePhoto(likePhotoData, pubsub) {
+		const result = await Photo.updateOne(
+			{ _id: likePhotoData.photoId },
+			{ $push: { likes: likePhotoData.likerId } }
+		);
+		pubsub.publish(`photo-${likePhotoData.photoId}`, {
+			photoLikedOrUnliked: { likerId: likePhotoData.likerId, action: 'like' },
+		});
+		return result;
+	}
+	async unlikePhoto(unlikePhotoData, pubsub) {
+		const result = await Photo.updateOne(
+			{ _id: unlikePhotoData.photoId },
+			{ $pull: { likes: unlikePhotoData.likerId } }
+		);
+		pubsub.publish(`photo-${unlikePhotoData.photoId}`, {
+			photoLikedOrUnliked: { likerId: unlikePhotoData.likerId, action: 'unlike' },
+		});
+		return result;
+	}
+	async createPhoto(photoData, imageService, pubsub) {
+		try {
+			const { owner, description, taggedUsers, category } = photoData;
+			const { createReadStream } = await photoData.photo;
+			const sourceStream = createReadStream();
+			const image = await imageService.uploadImage({ sourceStream });
+			const newPhoto = new Photo({
+				owner,
+				description,
+				taggedUsers,
+				category,
+				photoUrl: image.secure_url,
+			});
+			const result = await newPhoto.save();
+			pubsub.publish('PHOTO_ADDED', { photoAdded: result });
+			return result;
+		} catch (e) {
+			console.log('error uploading image', e.message);
+			return handleError(e);
+		}
+	}
 	editPhotoMeta(id, photoMeta) {}
 	changePhoto(id, photo) {}
 	deletePhoto(id) {}
 
-	createManyPhotos = (photos) => {
-		return Photo.insertMany(photos);
-	};
-	deleteManyPhotos = () => {
-		return Photo.deleteMany();
-	};
+	async createManyPhotos(photos) {
+		return await Photo.insertMany(photos);
+	}
+	async deleteManyPhotos() {
+		const result = await Photo.deleteMany();
+		console.log('deleted photos', result);
+		return result;
+	}
 	async editPhotoComment(id, comments) {
 		const photo = await Photo.findById(id);
 		comments.forEach((id) => photo.comments.push(id));

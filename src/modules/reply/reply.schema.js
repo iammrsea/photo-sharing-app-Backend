@@ -9,7 +9,7 @@ module.exports = gql`
 	}
 	input CreateReplyData {
 		commentId: String!
-		replierId: String!
+		replier: String!
 		content: String!
 	}
 
@@ -19,5 +19,9 @@ module.exports = gql`
 	extend type Mutation {
 		createReply(reply: CreateReplyData!): Reply
 		editReply(id: ID!, content: String!): Reply
+	}
+
+	extend type Subscription {
+		replyAdded(commentId: ID!): Reply!
 	}
 `;

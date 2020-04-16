@@ -1,21 +1,22 @@
-const ImageKit = require('imagekit');
+const cloudinary = require('cloudinary').v2;
 
-const imageKit = new ImageKit({
-	publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-	privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-	urlEndpoint: `https://ik.imagekit.io/${process.env.IMAGEKIT_ID}/`,
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_NAME,
+	api_key: process.env.CLOUDINARY_KEY,
+	api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const uploadImage = ({ file, fileName }) => {
-	return imageKit.upload({
-		file,
-		fileName,
+const uploadImage = ({ sourceStream }) => {
+	return new Promise((resolve, reject) => {
+		const destinationStream = cloudinary.uploader.upload_stream((error, image) => {
+			if (error) reject(error);
+			resolve(image);
+		});
+
+		sourceStream.pipe(destinationStream);
 	});
 };
-const deleteImage = (fileId) => {
-	return imageKit.deleteFile(fileId);
-};
+
 module.exports = {
 	uploadImage,
-	deleteImage,
 };

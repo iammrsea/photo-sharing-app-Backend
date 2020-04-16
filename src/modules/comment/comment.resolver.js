@@ -1,38 +1,45 @@
 module.exports = {
 	Query: {
-		comment(_, { id }, { loaders: { commentLoaders } }) {
-			return commentLoaders.commentById.load(id);
+		async comment(_, { id }, { loaders: { commentLoaders } }) {
+			return await commentLoaders().commentById.load(id);
 		},
-		comments(_, __, { services: { commentService } }) {
-			return commentService.comments();
+		async comments(_, __, { services: { commentService } }) {
+			return await commentService.comments();
 		},
-		commentsByPhotoId(_, { photoId }, { services: { commentService } }) {
-			return commentService.commentsByPhotoId(photoId);
+		async commentsByPhotoId(_, { photoId }, { services: { commentService } }) {
+			return await commentService.commentsByPhotoId(photoId);
 		},
 	},
 	Mutation: {
-		createComment(_, { comment }, { services: { commentService } }) {
-			return commentService.createComment(comment);
+		async createComment(_, { comment }, { services: { commentService }, pubsub }) {
+			return await commentService.createComment(comment, pubsub);
 		},
-		editComment(_, { id, content }, { services: { commentService } }) {
-			return commentService.editComment(id, content);
+		async editComment(_, { id, content }, { services: { commentService } }) {
+			return await commentService.editComment(id, content);
 		},
-		createManyComments(_, { comments }, { services: { commentService } }) {
-			return commentService.createManyComments(comments);
+		async createManyComments(_, { comments }, { services: { commentService } }) {
+			return await commentService.createManyComments(comments);
 		},
-		deleteManyComments(_, __, { services: { commentService } }) {
-			commentService.deleteManyComments();
+		async deleteManyComments(_, __, { services: { commentService } }) {
+			return await commentService.deleteManyComments();
+		},
+	},
+	Subscription: {
+		commentAdded: {
+			subscribe(_, { photoId }, { pubsub }) {
+				return pubsub.asyncIterator(photoId);
+			},
 		},
 	},
 	Comment: {
-		commentor(root, _, { loaders: { userLoaders } }) {
-			return userLoaders.load(root.commentor);
+		async commentor(root, _, { loaders: { userLoaders } }) {
+			return await userLoaders().userById.load(root.commentor);
 		},
-		totalReply(root, _, { services: { replyService } }) {
-			return replyService.totalReply(root.commentorId);
+		async totalReply(root, _, { services: { replyService } }) {
+			return await replyService.totalReply(root.commentorId);
 		},
-		replies(root, _, { loaders: { replyLoaders } }) {
-			return replyLoaders.repliesByCommentId.load(root._id);
+		async replies(root, _, { loaders: { replyLoaders } }) {
+			return await replyLoaders().repliesByCommentId.load(root._id);
 		},
 	},
 };

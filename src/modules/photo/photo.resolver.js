@@ -1,41 +1,64 @@
 module.exports = {
 	Mutation: {
-		createPhoto(_, { photoData }, { services: { photoService } }) {
-			return photoService.createPhoto(photoData);
+		async createPhoto(_, { photoData }, { services: { photoService, imageService }, pubsub }) {
+			// console.log('photoData', photoData);
+			// const { createReadStream } = await photoData.photo;
+			return await photoService.createPhoto(photoData, imageService, pubsub);
 		},
-		editPhotoMeta(_, { id, photoMeta }, { services: { photoService } }) {
-			return photoService.editPhotoMeta(id, photoMeta);
+		async editPhotoMeta(_, { id, photoMeta }, { services: { photoService } }) {
+			return await photoService.editPhotoMeta(id, photoMeta);
 		},
-		changePhoto(_, { id, photo }, { services: { photoService } }) {
-			return photoService.changedPhoto(id, photo);
+		async changePhoto(_, { id, photo }, { services: { photoService } }) {
+			return await photoService.changedPhoto(id, photo);
 		},
-		deletePhoto(_, { id }, { services: { photoService } }) {
-			return photoService.deletePhoto(id);
+		async deletePhoto(_, { id }, { services: { photoService } }) {
+			return await photoService.deletePhoto(id);
 		},
-		createManyPhotos(_, { photos }, { services: { photoService } }) {
-			return photoService.createManyPhotos(photos);
+		async createManyPhotos(_, { photos }, { services: { photoService } }) {
+			return await photoService.createManyPhotos(photos);
 		},
-		deleteManyPhotos(_, __, { services: { photoService } }) {
-			return photoService.deleteManyPhotos();
+		async deleteManyPhotos(_, __, { services: { photoService } }) {
+			return await photoService.deleteManyPhotos();
 		},
-		editPhotoComment(_, { id, comments }, { services: { photoService } }) {
-			return photoService.editPhotoComment(id, comments);
+		async editPhotoComment(_, { id, comments }, { services: { photoService } }) {
+			return await photoService.editPhotoComment(id, comments);
+		},
+		async likePhoto(_, { likePhotoData }, { services: { photoService }, pubsub }) {
+			return await photoService.likePhoto(likePhotoData, pubsub);
+		},
+		async unlikePhoto(_, { unlikePhotoData }, { services: { photoService }, pubsub }) {
+			return await photoService.unlikePhoto(unlikePhotoData, pubsub);
 		},
 	},
 	Query: {
-		photo(_, { id }, { loaders: { photoLoaders } }) {
-			return photoLoaders.load(id);
+		async photo(_, { id }, { loaders: { photoLoaders } }) {
+			return await photoLoaders().load(id);
 		},
-		photos(_, { first, after, filter = {}, sorting = {} }, { services: { photoService } }) {
-			return photoService.getPhotos({ first, after, filter, sorting });
+		async photos(_, { first, after, filter = {}, sorting = {} }, { services: { photoService } }) {
+			return await photoService.getPhotos({ first, after, filter, sorting });
 		},
 	},
 	Photo: {
-		totalComment(root, __, { services: { commentService } }) {
-			return commentService.totalCommentByPhotoId(root._id);
+		async totalComment(root, __, { services: { commentService } }) {
+			return await commentService.totalCommentByPhotoId(root._id);
 		},
-		totalLike(root, __, { services: { likeService } }) {
-			return likeService.totalLikeByPhotoId(root._id);
+		async owner(root, _, { loaders: { userLoaders } }) {
+			return await userLoaders().userById.load(root.owner);
+		},
+		// totalLike(root, __, { services: { likeService } }) {
+		// 	return likeService.totalLikeByPhotoId(root._id);
+		// },
+	},
+	Subscription: {
+		photoLikedOrUnliked: {
+			subscribe(_, { identifier }, { pubsub }) {
+				return pubsub.asyncIterator(identifier);
+			},
+		},
+		photoAdded: {
+			subscribe(_, __, { pubsub }) {
+				return pubsub.asyncIterator('PHOTO_ADDED');
+			},
 		},
 	},
 };

@@ -1,12 +1,14 @@
 const Comment = require('./comment.model');
 
 class CommentService {
-	createComment(comment) {
+	async createComment(comment, pubsub) {
 		// console.log('adding new comment', comment);
 		const newComment = new Comment({
 			...comment,
 		});
-		return newComment.save();
+		const result = await newComment.save();
+		pubsub.publish(comment.photoId, { commentAdded: result });
+		return result;
 	}
 	editComment(id, content) {
 		return Comment.findOneAndUpdate(
@@ -22,8 +24,8 @@ class CommentService {
 	deleteComment(id) {
 		return id;
 	}
-	commentsByPhotoId(photoId) {
-		return Comment.find({ photoId })
+	async commentsByPhotoId(photoId) {
+		return await Comment.find({ photoId })
 			.populate('commentor')
 			.populate({ path: 'replies', populate: { path: 'replier' } })
 			.exec();
@@ -40,11 +42,11 @@ class CommentService {
 		console.log('result', result);
 		return result;
 	}
-	comments() {
-		return Comment.find({});
+	async comments() {
+		return await Comment.find({});
 	}
-	totalCommentByPhotoId(photoId) {
-		return Comment.countDocuments({ photoId });
+	async totalCommentByPhotoId(photoId) {
+		return await Comment.countDocuments({ photoId });
 	}
 }
 

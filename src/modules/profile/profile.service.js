@@ -1,16 +1,21 @@
 const { handleError } = require('../../utils/helpers');
 const Profile = require('./profile.model');
-const uploaderService = require('../photo-uploader/uploader.service');
 
 class ProfileService {
-	async createProfile(profileData, req) {
+	async createProfile(profileData, req, imageService) {
 		if (!req.isUserAuth) {
 			return handleError('UnAuthorized');
 		}
 		try {
-			// const picture = await uploaderService({});
+			const { owner, about } = profileData;
+			const { createReadStream } = await profileData.picture;
+			const sourceStream = createReadStream();
+			const { secure_url } = await imageService.uploadImage({ sourceStream });
+
 			const profile = new Profile({
-				...profileData,
+				owner,
+				about,
+				picture: secure_url,
 			});
 			return await profile.save();
 		} catch (e) {
@@ -34,10 +39,19 @@ class ProfileService {
 			return handleError(e);
 		}
 	}
-	getUserProfile(ownerId) {
-		return Profile.find({ ownerId });
+	async getUserProfile(owner) {
+		console.log('owner id', owner);
+		const result = await Profile.findOne({ owner });
+		console.log('result', result);
+		return result;
 	}
 	async editProfilePicture(id, picture) {}
+	getAllProfiles() {
+		return Profile.find({}).populate('owner').exec();
+	}
+	deleteProfile(id) {
+		return Profile.findByIdAndRemove(id);
+	}
 }
 
 module.exports = ProfileService;

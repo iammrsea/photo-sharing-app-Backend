@@ -1,7 +1,7 @@
 const DataLoader = require('dataloader');
 const Reply = require('./reply.model');
 
-module.exports = {
+module.exports = () => ({
 	replyById: new DataLoader(
 		(keys) => {
 			// console.log('keys', keys);
@@ -23,9 +23,9 @@ module.exports = {
 			cacheKeyFn: (key) => key.toString(),
 		}
 	),
-};
+});
 async function repliesBatchFn(keys) {
 	return keys.map(async (commentId) => {
-		return await Reply.find({ commentId: commentId });
+		return await Reply.find({ commentId: commentId }).populate('replier').exec();
 	});
 }

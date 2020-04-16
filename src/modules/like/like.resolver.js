@@ -12,6 +12,7 @@ module.exports = {
 			return likeLoaders.load(id);
 		},
 	},
+
 	Like: {
 		likerId(root, _, __) {
 			console.log('like root', root);

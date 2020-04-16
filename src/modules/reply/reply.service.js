@@ -3,12 +3,13 @@ class ReplyService {
 	totalReply(commnetId) {
 		return Reply.countDocuments({ commnetId });
 	}
-	createReply(reply) {
+	async createReply(reply, pubsub) {
 		const newReply = new Reply({
 			...reply,
-			replier: reply.replierId,
 		});
-		return newReply.save();
+		const result = await newReply.save();
+		pubsub.publish(reply.commnetId, { replyAdded: result });
+		return result;
 	}
 	editReply(id, content) {
 		return Reply.findOneAndUpdate(

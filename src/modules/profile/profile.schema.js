@@ -4,29 +4,30 @@ module.exports = gql`
 	type Profile {
 		id: ID!
 		owner: User!
-		description: String!
+		about: String!
 		picture: String
 		profileId: String
 	}
 	input CreateProfileData {
 		owner: ID!
-		description: String!
+		about: String!
 		picture: Upload!
 	}
 	input EditProfileData {
 		description: String!
 	}
 	input ChangeProfilePicture {
-		pictureId: String!
 		picture: Upload!
 	}
 
 	extend type Query {
 		profile(id: ID!): Profile!
+		profiles: [Profile!]!
 	}
 	extend type Mutation {
 		createProfile(profileData: CreateProfileData): Profile!
 		editProfile(id: ID!, editData: EditProfileData): Profile
 		editProfilePicture(id: ID!, editData: ChangeProfilePicture): Profile
+		deleteProfile(id: ID!): Profile
 	}
 `;

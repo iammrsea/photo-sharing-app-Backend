@@ -3,16 +3,14 @@ const { gql } = require('apollo-server-express');
 module.exports = gql`
 	type Photo {
 		id: ID!
-		story: String
-		fileId: String
+		description: String
 		photoUrl: String!
 		owner: User!
 		taggedUsers: [User!]!
 		comments: [Comment!]!
 		createdAt: String!
-		totalLike: Int
 		totalComment: Int
-		likes: [Like!]!
+		likes: [String!]!
 		category: PhotoCategory
 	}
 
@@ -22,15 +20,19 @@ module.exports = gql`
 		totalCount: Int
 	}
 
+	type LikeUnlike {
+		likerId: String!
+		action: String!
+	}
 	input CreatePhotoData {
-		ownerId: String!
+		owner: String!
 		photo: Upload!
-		story: String
+		description: String
 		taggedUsers: [String!]!
 		category: PhotoCategory!
 	}
 	input EditPhotoData {
-		story: String
+		description: String
 		category: PhotoCategory
 	}
 	input PhotoFilter {
@@ -56,6 +58,14 @@ module.exports = gql`
 		GRAPHIC
 		OTHER
 	}
+	input LikePhoto {
+		photoId: String!
+		likerId: String!
+	}
+	input UnlikePhoto {
+		photoId: String!
+		likerId: String!
+	}
 	input FakePhoto {
 		owner: String!
 		photoUrl: String!
@@ -63,6 +73,7 @@ module.exports = gql`
 		taggedUsers: [String!]!
 		category: PhotoCategory!
 	}
+
 	extend type Query {
 		photo(id: ID!): Photo!
 		photos(first: Int, after: String, sorting: PhotoSortData, filter: PhotoFilter): PhotoConnection
@@ -76,5 +87,11 @@ module.exports = gql`
 		createManyPhotos(photos: [FakePhoto!]!): [Photo]
 		deleteManyPhotos: [Photo]
 		editPhotoComment(id: ID!, comments: [String!]!): Photo
+		likePhoto(likePhotoData: LikePhoto!): Photo
+		unlikePhoto(unlikePhotoData: UnlikePhoto!): Photo
+	}
+	extend type Subscription {
+		photoLikedOrUnliked(identifier: String!): LikeUnlike!
+		photoAdded: Photo!
 	}
 `;

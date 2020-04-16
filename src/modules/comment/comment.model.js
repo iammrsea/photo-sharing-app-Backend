@@ -7,12 +7,18 @@ const commentSchema = new Schema(
 	{
 		commentor: {
 			type: Types.ObjectId,
+			required: true,
 			ref: 'User',
 		},
 		photoId: {
 			type: Types.ObjectId,
+			ref: 'Photo',
+			required: true,
 		},
-		content: String,
+		content: {
+			type: String,
+			required: true,
+		},
 		replies: [
 			{
 				type: Types.ObjectId,
@@ -35,6 +41,6 @@ async function removeReplies(doc) {
 	const Photo = mongoose.model('Photo');
 	await Reply.remove({ _id: { $in: doc.replies } });
 
-	await Photo.updateOne({ _id: doc.photoId }, { $pull: { comments: { $eq: doc._id } } });
+	await Photo.updateOne({ _id: doc.photoId }, { $pull: { comments: doc._id } });
 }
 module.exports = mongoose.model('Comment', commentSchema);
