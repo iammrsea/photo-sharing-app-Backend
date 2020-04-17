@@ -77,6 +77,7 @@ module.exports = gql`
 	extend type Query {
 		photo(id: ID!): Photo!
 		photos(first: Int, after: String, sorting: PhotoSortData, filter: PhotoFilter): PhotoConnection
+		searchPhotos(first: Int, after: String, sorting: PhotoSortData, searchText: String!): PhotoConnection
 	}
 
 	extend type Mutation {

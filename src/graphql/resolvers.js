@@ -5,7 +5,7 @@ const commentResovlers = require('../modules/comment/comment.resolver');
 const photoResolvers = require('../modules/photo/photo.resolver');
 const replyResolvers = require('../modules/reply/reply.resolver');
 const profileResolvers = require('../modules/profile/profile.resolver');
-const likeResolvers = require('../modules/like/like.resolver');
+
 
 const resolvers = {
 	Node: {
@@ -26,6 +26,5 @@ module.exports = merge(
 	commentResovlers,
 	profileResolvers,
 	replyResolvers,
-	likeResolvers,
 	photoResolvers
 );

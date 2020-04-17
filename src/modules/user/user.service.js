@@ -53,7 +53,7 @@ class UserService {
 			const build = queryBuilder(query, { first, after, sortBy, sortOrder });
 			query = build.query;
 
-			const data = await query.exec();
+			const data = await query.populate('profile').exec();
 			// const totalCount = await User.find({ username: searchText }).countDocuments();
 			return {
 				...dataTransformer({

@@ -1,12 +1,18 @@
 module.exports = {
 	Mutation: {
-		async createProfile(_, { profileData }, { services: { profileService, imageService }, req }) {
+		createProfile(_, { profileData }, { services: { profileService, imageService }, req }) {
 			// console.log('photoData', photoData);
 			// const { createReadStream } = await photoData.photo;
-			return await profileService.createProfile(profileData, req, imageService);
+			return profileService.createProfile(profileData, req, imageService);
 		},
-		async deleteProfile(_, { id }, { services: { profileService } }) {
-			return await profileService.deleteProfile(id);
+		deleteProfile(_, { id }, { services: { profileService } }) {
+			return profileService.deleteProfile(id);
+		},
+		editProfile(_, { id, about }, { services: { profileService }, req }) {
+			return profileService.editProfile(id, about, req);
+		},
+		editProfilePicture(_, { id, picture }, { services: { profileService, imageService }, req }) {
+			return profileService.editProfilePicture(id, picture, req, imageService);
 		},
 	},
 	Query: {

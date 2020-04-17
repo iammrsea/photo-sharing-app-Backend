@@ -40,11 +40,13 @@ const photoSchema = new Schema(
 		],
 	},
 
-	{ timestamps: true }
+	{ timestamps: true, autoIndex: false }
 );
 photoSchema.post('remove', removeLinkedDocs);
 async function removeLinkedDocs(doc) {
 	const Comment = mongoose.model('Comment');
 	await Comment.remove({ _id: { $in: doc.comments } });
 }
-module.exports = mongoose.model('Photo', photoSchema);
+const Photo = mongoose.model('Photo', photoSchema);
+Photo.createIndexes({ category: 'text', description: 'text' });
+module.exports = Photo;

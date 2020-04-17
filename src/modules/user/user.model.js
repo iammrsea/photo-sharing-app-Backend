@@ -19,7 +19,7 @@ const userSchema = new Schema(
 			ref: 'Profile',
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true, autoIndex: 'false' }
 );
 
 userSchema.post('remove', removeProfile);
@@ -30,6 +30,7 @@ async function removeProfile(doc) {
 }
 
 const User = mongoose.model('User', userSchema);
+
 User.createIndexes({ username: 'text' });
 
 module.exports = User;

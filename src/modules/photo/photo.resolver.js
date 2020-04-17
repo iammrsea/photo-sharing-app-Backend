@@ -37,6 +37,9 @@ module.exports = {
 		async photos(_, { first, after, filter = {}, sorting = {} }, { services: { photoService } }) {
 			return await photoService.getPhotos({ first, after, filter, sorting });
 		},
+		searchPhotos(_, { first, after, searchText, sorting = {} }, { services: { photoService } }) {
+			return photoService.searchPhotos({ first, after, sorting, searchText });
+		},
 	},
 	Photo: {
 		async totalComment(root, __, { services: { commentService } }) {

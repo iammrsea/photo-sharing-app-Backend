@@ -22,7 +22,7 @@ class ProfileService {
 			return handleError(e);
 		}
 	}
-	async editProfile(id, editData) {
+	async editProfile(id, about, req) {
 		if (!req.isUserAuth) {
 			return handleError('UnAuthorized');
 		}
@@ -31,10 +31,15 @@ class ProfileService {
 			if (profile.owner.toString() !== req.userId) {
 				return handleError('UnAuthorized');
 			}
-			return await Profile.findOneAndUpdate({ _id: id }, editData, {
-				useFindAndModify: false,
-				new: true,
-			});
+
+			return await Profile.findOneAndUpdate(
+				{ _id: id },
+				{ about },
+				{
+					useFindAndModify: false,
+					new: true,
+				}
+			);
 		} catch (e) {
 			return handleError(e);
 		}
@@ -45,7 +50,33 @@ class ProfileService {
 		console.log('result', result);
 		return result;
 	}
-	async editProfilePicture(id, picture) {}
+	async editProfilePicture(id, picture, req, imageService) {
+		if (!req.isUserAuth) {
+			return handleError('UnAuthorized');
+		}
+
+		try {
+			const profile = await Profile.findById(id);
+			if (profile.owner.toString() !== req.userId) {
+				return handleError('UnAuthorized');
+			}
+
+			const { createReadStream } = await picture;
+			const sourceStream = createReadStream();
+			const { secure_url } = await imageService.uploadImage({ sourceStream });
+
+			return await Profile.findOneAndUpdate(
+				{ _id: id },
+				{ picture: secure_url },
+				{
+					useFindAndModify: false,
+					new: true,
+				}
+			);
+		} catch (e) {
+			return handleError(e);
+		}
+	}
 	getAllProfiles() {
 		return Profile.find({}).populate('owner').exec();
 	}

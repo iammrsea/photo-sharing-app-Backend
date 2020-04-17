@@ -88,6 +88,25 @@ class PhotoService {
 			return handleError(e);
 		}
 	}
+	async searchPhotos({ first, after, searchText, sorting: { sortOrder, sortBy } }) {
+		// await Photo.createIndexes();
+		let query = Photo.find({ $text: { $search: searchText } });
+		const build = queryBuilder(query, { first, after, sortBy, sortOrder });
+		query = build.query;
+		query
+			.populate('owner')
+			.populate({ path: 'comments', populate: { path: 'commentor' } })
+			.populate('taggedUsers');
+		const data = await query.exec();
+		return {
+			...dataTransformer({
+				data,
+				limit: build.limit,
+				sortOrder: build.sort,
+				sortBy: build.sortingBy,
+			}),
+		};
+	}
 	editPhotoMeta(id, photoMeta) {}
 	changePhoto(id, photo) {}
 	deletePhoto(id) {}

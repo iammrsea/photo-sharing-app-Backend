@@ -26,8 +26,8 @@ module.exports = gql`
 	}
 	extend type Mutation {
 		createProfile(profileData: CreateProfileData): Profile!
-		editProfile(id: ID!, editData: EditProfileData): Profile
-		editProfilePicture(id: ID!, editData: ChangeProfilePicture): Profile
+		editProfile(id: ID!, about: String!): Profile
+		editProfilePicture(id: ID!, picture: Upload!): Profile
 		deleteProfile(id: ID!): Profile
 	}
 `;

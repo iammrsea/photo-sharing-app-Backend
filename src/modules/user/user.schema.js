@@ -82,7 +82,7 @@ module.exports = gql`
 		editUser(id: ID!, editUserData: EditUserData): User
 		deleteUser(id: ID!): User
 		formSignIn(signinData: FormSigninUserData): AuthResponse
-		providerSignIn(signinData: ProviderSignInData): AuthResponse
+		providerSignIn(signinData: ProviderSignInData!): AuthResponse
 		createManyUsers(users: [CreateManyUsers!]!): [User]
 		deleteManyUsers: [User]
 	}
