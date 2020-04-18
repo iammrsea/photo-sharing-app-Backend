@@ -50,12 +50,11 @@ module.exports = gql`
 		sortBy: SortablePhotoField = createdAt
 	}
 	enum PhotoCategory {
-		SELFIE
-		PORTRAIT
-		LANDSCAPE
+		PETS
+		TRAVEL
+		MOVIES
 		ACTION
 		FUN
-		GRAPHIC
 		OTHER
 	}
 	input LikePhoto {
