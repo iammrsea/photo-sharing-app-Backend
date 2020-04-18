@@ -4,7 +4,6 @@ const commentTypeDefs = require('../modules/comment/comment.schema');
 const photoTypeDefs = require('../modules/photo/photo.schema');
 const replyTypeDefs = require('../modules/reply/reply.schema');
 const profileTypeDefs = require('../modules/profile/profile.schema');
-const likeTypeDefs = require('../modules/like/like.schema');
 const queryTypeDefs = require('./query');
 const mutationTypeDefs = require('./mutation');
 const subscriptionTypeDefs = require('./subscription');
@@ -35,7 +34,6 @@ module.exports = [
 	commentTypeDefs,
 	photoTypeDefs,
 	replyTypeDefs,
-	likeTypeDefs,
 	profileTypeDefs,
 	queryTypeDefs,
 	mutationTypeDefs,
