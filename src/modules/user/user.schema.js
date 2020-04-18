@@ -31,8 +31,7 @@ module.exports = gql`
 	}
 
 	input FormSigninUserData {
-		username: String
-		email: String
+		emailOrUsername: String
 		password: String!
 	}
 	input EditUserData {

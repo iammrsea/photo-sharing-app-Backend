@@ -173,11 +173,11 @@ class UserService {
 			{ expiresIn: '72h' }
 		);
 	}
-	async formSignIn({ username, email, password }) {
+	async formSignIn({ emailOrUsername, password }) {
 		try {
-			let userExists = await User.findOne({ username });
+			let userExists = await User.findOne({ username: emailOrUsername });
 			if (!userExists) {
-				userExists = await User.findOne({ email });
+				userExists = await User.findOne({ email: emailOrUsername });
 			}
 			if (!userExists) {
 				return handleError('Invalid Login credentials');
