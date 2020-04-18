@@ -4,6 +4,7 @@ const queryBuilder = require('../query-builder/query-builder.service');
 const { handleError } = require('../../utils/helpers');
 class PhotoService {
 	async getPhotos({ userId, ownerId, first, after, filter, sorting: { sortBy, sortOrder } }) {
+		// await Photo.createIndexes();
 		try {
 			let query;
 			if (userId) {
