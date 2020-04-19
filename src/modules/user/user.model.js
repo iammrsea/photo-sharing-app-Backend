@@ -25,6 +25,7 @@ const userSchema = new Schema(
 userSchema.post('remove', removeProfile);
 
 async function removeProfile(doc) {
+	console.log('post middleware ', doc);
 	const Profile = mongoose.model('Profile');
 	await Profile.remove({ owner: doc._id });
 }
