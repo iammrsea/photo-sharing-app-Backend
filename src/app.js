@@ -40,9 +40,9 @@ const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 mongoose
-	.connect(process.env.DB_HOST, { useNewUrlParser: true, useUnifiedTopology: true })
+	.connect(process.env.PROD_DB_HOST, { useNewUrlParser: true, useUnifiedTopology: true })
 	.then((value) => {
-		console.log(`Successfully connected to database: ${process.env.DB_HOST}`);
+		console.log(`Successfully connected to database: ${process.env.PROD_DB_HOST}`);
 		return httpServer.listen(process.env.PORT || 5000);
 	})
 	.then(() => {
