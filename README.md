@@ -51,7 +51,7 @@ Built with
         point, the only thing going through my mind was, 'what the heck is messing with my code? where did I get it all wrong?". At 
         some point I tried to convince myself that perhaps the problem would go away when the app was finally hosted online. Naive me!!
         However, even while deluding myself that it would all go away, I was still unhappy and didn't stop thinking about what could
-        have gone wrong. I proceeded with the implementation of the rest of the frontend. Just one day, I didn't know how it happen,
+        have gone wrong. I proceeded with the implementation of the rest of the frontend. Just one day, I didn't know how it happened,
         but I started suspecting my Dataloader module as a likely culprit to this problem. I had to take a hard look on the module and
         guess what I found? Well, I was stupidly exporting all my dataloader services as objects. Should I repeat it? I said, I exported
         the darn thing as OBJECT!!!.
@@ -67,7 +67,7 @@ Built with
         the Nodejs process runs. Consequently, each time I made request to the server, I always got the results in the cache regardless
         the new changes made on the frontent. How was I able to fix this problem? Very simple, the next paragraph got you covered.
         
-        Well, in order solve the problem I wrapped my dataloader service objects in functions. Simple trick. So for every request,
+        Well, in order solve this problem, I wrapped my dataloader service objects in functions. Simple trick. So for every request,
         instead returning already existing object in memory by reference, my wrapper functions are run and fresh instances of the 
         dataloader services are returned and everyone is happy. You might ask, what about the old ones, what becomes of them? Well,
         our very good old friend, garbage collector, will take care of them when the time is right. You got nothing to worry about.
