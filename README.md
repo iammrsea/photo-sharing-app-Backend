@@ -17,7 +17,7 @@ Built with
 - Ability to like a photo
 - Ability to comment on photos
 - Real-time comment (every new comment is seen by all logged in users)
-- Real-time time notification
+- Real-time notification
 
 ## Challenges
 - Implementing relay-style cursor pagination
@@ -42,8 +42,8 @@ Built with
         This was the most subtle, nerve-wracking, albeit easiest to fix challenge I faced while working on this project. So what 
         went wrong with Dataloader then? I can't believe I could make such mistake, really. I mean, I had watched Mr Lee B's 
         presentation on Dataloader, I had looked at the source code at some point, and yet I did forget in the heat of the moment.
-        On the frontend, I realised that each time a user liked or commented on a photo, it reflected on the number of comments and 
-        likes but after refreshing the page, the comment or like count went back to the original value. To make matter worse, when 
+        On the frontend, I realised that each time a user liked or commented on a photo, it reflected on the number of likes or 
+        comments but after refreshing the page, the comment or like count went back to the original value. To make matter worse, when 
         I accessed my Database from MongDB Compass the new changes were recorded.
         
         I was completely confused at this point. In my quest to get a solution to this problem, I tried killing my server process and
