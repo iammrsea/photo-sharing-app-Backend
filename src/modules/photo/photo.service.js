@@ -72,6 +72,7 @@ class PhotoService {
 		try {
 			const { owner, description, taggedUsers, category } = photoData;
 			const { createReadStream } = await photoData.photo;
+			// console.log('photo', createReadStream());
 			const sourceStream = createReadStream();
 			const image = await imageService.uploadImage({ sourceStream });
 			const newPhoto = new Photo({
@@ -108,9 +109,9 @@ class PhotoService {
 			}),
 		};
 	}
-	editPhotoMeta(id, photoMeta) {}
-	changePhoto(id, photo) {}
-	deletePhoto(id) {}
+	editPhotoMeta(id, photoMeta) { }
+	changePhoto(id, photo) { }
+	deletePhoto(id) { }
 
 	async createManyPhotos(photos) {
 		return await Photo.insertMany(photos);

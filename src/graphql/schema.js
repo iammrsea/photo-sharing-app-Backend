@@ -11,6 +11,8 @@ const subscriptionTypeDefs = require('./subscription');
 const generalTypeDefs = gql`
 	union Node = User | Photo
 
+	scalar Upload
+
 	type Edge {
 		cursor: String!
 		node: Node

@@ -9,8 +9,12 @@ cloudinary.config({
 const uploadImage = ({ sourceStream }) => {
 	return new Promise((resolve, reject) => {
 		const destinationStream = cloudinary.uploader.upload_stream((error, image) => {
-			if (error) reject(error);
-			resolve(image);
+			if (image) {
+				resolve(image);
+			} else {
+				reject(error);
+			}
+
 		});
 
 		sourceStream.pipe(destinationStream);
